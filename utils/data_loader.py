@@ -103,4 +103,9 @@ class HotpotQADataset(Dataset):
 def get_hotpot_dataloader(split, tokenizer, batch_size=4, max_length=1024):
     """Creates a DataLoader for the HotpotQA dataset."""
     dataset = HotpotQADataset(split, tokenizer, max_length)
-    return DataLoader(dataset, batch_size=batch_size, shuffle=(split == "train"))
+    return DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=(split == "train"),
+        drop_last=(split == "train"),
+    )

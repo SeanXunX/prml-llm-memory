@@ -44,7 +44,7 @@ class EarlyStopper:
             return False
         else:
             self.counter += 1
-            logger.warning(
+            logger.info(
                 f"Validation loss did not improve. Counter: {self.counter}/{self.patience}"
             )
             if self.counter >= self.patience:
@@ -64,9 +64,11 @@ def evaluate(
     """
     model.eval()
     total_loss = 0
-    model.current_memory = None  # Reset memory for a clean evaluation
 
     for batch in tqdm(dataloader, desc="Evaluating"):
+        # Reset memory for each batch to ensure independent evaluation
+        model.current_memory = None
+
         batch_on_device = {k: v.to(device) for k, v in batch.items()}
         outputs = model(
             input_ids=batch_on_device["input_ids"],
@@ -136,7 +138,7 @@ def main():
     if latest_checkpoint.exists():
         logger.info(f"Loading checkpoint from {latest_checkpoint}...")
         checkpoint = torch.load(latest_checkpoint, map_location=DEVICE)
-        model.load_state_dict(checkpoint["model_state_dict"])
+        model.load_state_dict(checkpoint["model_state_dict"], strict=False)
         trainer.optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
         start_epoch = checkpoint["epoch"] + 1
         early_stopper.best_loss = checkpoint["best_val_loss"]

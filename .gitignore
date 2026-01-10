@@ -13,3 +13,6 @@ wheels/
 logs/
 hf_cache/
 datasets/
+checkpoints/
+
+*.pt
