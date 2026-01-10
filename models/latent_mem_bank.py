@@ -1,7 +1,7 @@
-from typing import Optional
+from typing import Optional, Tuple
+
 import torch
 import torch.nn as nn
-from typing import Tuple
 
 
 class LatentMemBank(nn.Module):
@@ -59,7 +59,8 @@ class LatentMemBank(nn.Module):
         )
 
     def encode_experience(
-        self, last_hidden_states: torch.Tensor  # [batch, seq_len, last_hidden_size]
+        self,
+        last_hidden_states: torch.Tensor,  # [batch, seq_len, last_hidden_size]
     ) -> torch.Tensor:
         """Convert LLM's last hidden states into memory representation."""
         memory_repr = self.memory_encoder(
